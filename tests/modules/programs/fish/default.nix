@@ -10,5 +10,6 @@
   fish-manpage = ./manpage.nix;
   fish-no-man-cache-without-man-package = ./no-man-cache-without-man-package.nix;
   fish-binds = ./binds.nix;
+  fish-profile-completions = ./profile-completions.nix;
   fish-session-variables = ./session-variables.nix;
 }
