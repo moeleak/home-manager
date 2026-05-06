@@ -640,6 +640,39 @@ in
           cfg.sessionVariablesPackage
         ];
         programs.fish.sessionVariablesPackage = sessionVarsPkg;
+
+        programs.fish.interactiveShellInit = lib.mkBefore ''
+          # add completions and functions from the Home Manager profile
+          begin
+            set -l profile ${lib.escapeShellArg config.home.profileDirectory}
+            set -l completion_paths
+            set -l function_paths
+
+            for path in \
+                $profile/etc/fish/completions \
+                $profile/share/fish/vendor_completions.d
+              if test -d $path; and not contains -- $path $fish_complete_path
+                set completion_paths $completion_paths $path
+              end
+            end
+
+            for path in \
+                $profile/etc/fish/functions \
+                $profile/share/fish/vendor_functions.d
+              if test -d $path; and not contains -- $path $fish_function_path
+                set function_paths $function_paths $path
+              end
+            end
+
+            if test (count $completion_paths) -gt 0
+              set fish_complete_path $fish_complete_path[1] $completion_paths $fish_complete_path[2..-1]
+            end
+
+            if test (count $function_paths) -gt 0
+              set fish_function_path $fish_function_path[1] $function_paths $fish_function_path[2..-1]
+            end
+          end
+        '';
       }
 
       (mkIf cfg.generateCompletions (
