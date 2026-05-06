@@ -8,5 +8,6 @@
   fish-plugins = ./plugins.nix;
   fish-manpage = ./manpage.nix;
   fish-binds = ./binds.nix;
+  fish-profile-completions = ./profile-completions.nix;
   fish-session-variables = ./session-variables.nix;
 }
