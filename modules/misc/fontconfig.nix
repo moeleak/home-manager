@@ -17,6 +17,14 @@ let
   xml = pkgs.formats.xml { };
 
   globalConfig = config;
+
+  fcCache = lib.escapeShellArgs (
+    lib.optional (!pkgs.stdenv.buildPlatform.canExecute pkgs.stdenv.hostPlatform) (
+      pkgs.stdenv.hostPlatform.emulator pkgs.buildPackages
+    )
+    ++ [ (lib.getExe' pkgs.fontconfig "fc-cache") ]
+  );
+
   fontConfigFileType = lib.types.submodule (
     let
       noteContentOptionsExclusivity = ''
@@ -335,7 +343,7 @@ in
       </fontconfig>
       EOF
 
-        ${lib.getBin pkgs.fontconfig}/bin/fc-cache -f
+        ${fcCache} -f
         rm -f $out/lib/fontconfig/cache/CACHEDIR.TAG
         rmdir --ignore-fail-on-non-empty -p $out/lib/fontconfig/cache
 
